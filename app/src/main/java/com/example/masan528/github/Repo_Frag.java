@@ -1,6 +1,9 @@
 package com.example.masan528.github;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.text.*;
 import android.text.method.*;
+import android.graphics.drawable.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +43,7 @@ public class Repo_Frag extends Fragment {
     public String repo_url = "https://api.github.com/users/"+username+"/repos"+OAuth;
     private RelativeLayout scroll;
     public static ArrayList<String> url_list;
+    public static final String SHARED_PREFS = "sharedPrefs";
     public Repo_Frag() {
         // Required empty public constructor
     }
@@ -60,13 +65,32 @@ public class Repo_Frag extends Fragment {
 
         ArrayList<String> list =parse_result(result);
         scroll = (RelativeLayout) v.findViewById(R.id.scroll);
+        TextView title = new TextView(getActivity());
+        title.setText("Public Repositories");
+        title.setTextSize(25);
+        title.setTextColor(Color.BLACK);
+        RelativeLayout.LayoutParams params_ = new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.WRAP_CONTENT,  RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params_.setMargins(250,0,0,0);
+        title.setLayoutParams(params_);
+        scroll.addView(title);
+
+        ShapeDrawable arrowDrawable = new ShapeDrawable();
+        arrowDrawable.getPaint().setColor(Color.BLACK);
+
+        View line = new View(getActivity());
+        RelativeLayout.LayoutParams line_para = new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.MATCH_PARENT,  1);
+        line_para.setMargins(0,190,0,0);
+        line.setBackgroundDrawable(arrowDrawable);
+        line.setLayoutParams(line_para);
+        scroll.addView(line);
+
         for (int i =0; i<list.size();i++){
             TextView t = new TextView(getActivity());
             t.setId(i);
             String text = "";
             if(i%3 ==0){
                 text = list.get(i);
-                t.setTextSize(25);
+                t.setTextSize(20);
             }
             else if (i%3 == 1){
                 text = "Repo Owner:"+'\n'+list.get(i);
@@ -83,19 +107,12 @@ public class Repo_Frag extends Fragment {
             }
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.WRAP_CONTENT,  RelativeLayout.LayoutParams.WRAP_CONTENT);
-            if (i==0) {
-                //params.addRule(RelativeLayout.ALIGN_TOP,scroll.getId());
-                //params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-                params.setMargins(0,10,0,0);
-            }
-            else{
+            params.setMargins(0,200+180*i,0,0);
 
-                params.setMargins(0,10+180*i,0,0);
-            }
             t.setLayoutParams(params );
             scroll.addView(t);
         }
-
+        saveData();
         return v;
     }
 
@@ -159,6 +176,18 @@ public class Repo_Frag extends Fragment {
             Repo_Frag.result =textResult;
             super.onPostExecute(aVoid);
         }
+    }
+
+    public void saveData(){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("repo_result",Repo_Frag.result);
+        editor.apply();
+    }
+
+    public void loadData(){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS,Context.MODE_PRIVATE);
+        Repo_Frag.result = sharedPreferences.getString("repo_result","");
     }
 
 }

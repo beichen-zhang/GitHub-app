@@ -1,11 +1,16 @@
 package com.example.masan528.github;
 
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import android.widget.*;
-
+import java.util.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +46,8 @@ public class following extends Fragment {
     public String url = API+"/"+username+"/following"+OAuth;
     private RelativeLayout relativeLayout;
     public String output;
+    private Profile_Frag profile_frag;
+    public static final String SHARED_PREFS = "sharedPrefs";
 
     public following() {
         // Required empty public constructor
@@ -73,10 +81,20 @@ public class following extends Fragment {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.WRAP_CONTENT,  RelativeLayout.LayoutParams.WRAP_CONTENT);
                 params.setMargins(80,10+350*i,0,0);
                 im.setLayoutParams(params);
+                im.setOnClickListener(new MyLovelyOnClickListener(list.get(i+1)));
                 relativeLayout.addView(im);
+
+                Button unfollow = new Button(getActivity());
+                RelativeLayout.LayoutParams params_btn = new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.WRAP_CONTENT,  RelativeLayout.LayoutParams.WRAP_CONTENT);
+                params_btn.setMargins(980,10+350*i,0,0);
+                unfollow.setLayoutParams(params_btn);
+                unfollow.setText("unfollow");
+                unfollow.setOnClickListener(new MyButton(list.get(i+1)));
+                relativeLayout.addView(unfollow);
 
             }
             else{
@@ -89,7 +107,7 @@ public class following extends Fragment {
             }
 
         }
-
+        saveData();
 
         return v;
     }
@@ -149,6 +167,28 @@ public class following extends Fragment {
         }
     }
 
+
+    public class MyLovelyOnClickListener implements View.OnClickListener
+    {
+
+        String myLovelyVariable;
+        public MyLovelyOnClickListener(String myLovelyVariable) {
+            this.myLovelyVariable = myLovelyVariable;
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            profile_frag = new Profile_Frag();
+            Bundle b = new Bundle();
+            b.putString("url",API+"/"+myLovelyVariable+OAuth);
+            profile_frag.setArguments(b);
+            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.main_frame,profile_frag);
+            fragmentTransaction.commit();
+        }
+
+    };
     private class ImgTask extends AsyncTask<Void,Void,Void>{
         Bitmap bitmap;
         ImageView img;
@@ -177,4 +217,87 @@ public class following extends Fragment {
         }
     }
 
+    public void saveData(){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("following_result",following.result);
+        editor.apply();
+    }
+
+    public void loadData(){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS,Context.MODE_PRIVATE);
+        following.result = sharedPreferences.getString("following_result","");
+    }
+
+    public class MyButton implements View.OnClickListener
+    {
+
+        String userid;
+        public MyButton(String id) {
+            this.userid = id;
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            try {
+                Void ret = new UnFollow_Task(this.userid).execute().get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    };
+
+    private class UnFollow_Task extends AsyncTask<Void,Void,Void> {
+        String id;
+
+        public UnFollow_Task(String id){
+            this.id = id;
+            Follower_Frag.id_user = this.id;
+        }
+        @TargetApi(Build.VERSION_CODES.O)
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            //https://api.github.com/user/following/parai?client_id=3de3290a900bbebd5131&client_secret=08e513c37e66b5fcd2299e6ffed52c2ba0ac0167
+            try {
+                URL url = new URL("https://api.github.com/user/following/"+ this.id+OAuth);
+                HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+
+                String password = "ZBCzbc350402";
+
+                //String encoded = Base64.getEncoder().encodeToString((username + ":" + password).getBytes("UTF-8"),android.util.Base64.NO_WRAP);
+                String encoded = android.util.Base64.encodeToString((username + ":" + password).getBytes("UTF-8"), android.util.Base64.NO_WRAP);
+                httpCon.setRequestProperty("Authorization", "Basic "+encoded);
+
+                httpCon.setDoOutput(true);
+                httpCon.setRequestMethod("DELETE");
+                //httpCon.getInputStream();
+                int code = httpCon.getResponseCode();
+                if (code ==204){
+                    Toast toast = Toast.makeText(getActivity().getApplicationContext(),
+                            "Successfully followed!",
+                            Toast.LENGTH_SHORT);
+
+                    toast.show();
+                }
+                else{
+                    Toast toast = Toast.makeText(getActivity().getApplicationContext(),
+                            "Failed",
+                            Toast.LENGTH_SHORT);
+
+                    toast.show();
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+    }
 }
