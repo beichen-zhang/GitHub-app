@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private Follower_Frag follower_frag;
     private Repo_Frag repo_frag;
 
-    private String clientId = "3de3290a900bbebd5131";
-    private String clientSecret = "08e513c37e66b5fcd2299e6ffed52c2ba0ac0167";
+    private String clientId = "xxx";
+    private String clientSecret = "xxx";
     private String redirectUrl = "githubapiclient://callback";
     private String OAuth = "?client_id="+clientId+"&client_secret="+clientSecret;
     private String API = "https://api.github.com/users";
@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private static boolean resume = false;
     //https://api.github.com/users/beichen-zhang?
     public String repo_url = "https://api.github.com/users/"+username+"/repos"+OAuth;
-    //url = 'https://api.github.com/users/beichen-zhang?client_id=3de3290a900bbebd5131&client_secret=08e513c37e66b5fcd2299e6ffed52c2ba0ac0167';
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
