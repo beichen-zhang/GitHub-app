@@ -40,9 +40,8 @@ import android.os.*;
  * A simple {@link Fragment} subclass.
  */
 public class Follower_Frag extends Fragment {
-    //'https://api.github.com/users/yzhan189/followers?client_id=xxxx&client_secret=xxxx';
-    private String clientId = "3de3290a900bbebd5131";
-    private String clientSecret = "08e513c37e66b5fcd2299e6ffed52c2ba0ac0167";
+    private String clientId = "xxx";
+    private String clientSecret = "xxx";
     private String redirectUrl = "https://github.com/beichen-zhang";
     private String OAuth = "?client_id="+clientId+"&client_secret="+clientSecret;
     private String API = "https://api.github.com/users";
@@ -50,13 +49,12 @@ public class Follower_Frag extends Fragment {
     private String username = "beichen-zhang";
     public static String result;
     public String url = API+"/"+username+"/followers"+OAuth;
-    //https://api.github.com/users/beichen-zhang/followers?client_id=3de3290a900bbebd5131&client_secret=08e513c37e66b5fcd2299e6ffed52c2ba0ac0167
     private RelativeLayout relativeLayout;
     public String output;
     private Profile_Frag profile_frag;
     private String cur_user;
     public static final String SHARED_PREFS = "sharedPrefs";
-    private String token = "e7ed9dc4c88ce550d15ab5b97322e25f3595f631";
+    private String token = "xxx";
     public static String id_user;
 
     public Follower_Frag() {
