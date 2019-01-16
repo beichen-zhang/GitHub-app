@@ -35,8 +35,8 @@ import java.util.*;
  * A simple {@link Fragment} subclass.
  */
 public class following extends Fragment {
-    private String clientId = "3de3290a900bbebd5131";
-    private String clientSecret = "08e513c37e66b5fcd2299e6ffed52c2ba0ac0167";
+    private String clientId = "xxx";
+    private String clientSecret = "xxx";
     private String redirectUrl = "https://github.com/beichen-zhang";
     private String OAuth = "?client_id="+clientId+"&client_secret="+clientSecret;
     private String API = "https://api.github.com/users";
@@ -262,7 +262,6 @@ public class following extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            //https://api.github.com/user/following/parai?client_id=3de3290a900bbebd5131&client_secret=08e513c37e66b5fcd2299e6ffed52c2ba0ac0167
             try {
                 URL url = new URL("https://api.github.com/user/following/"+ this.id+OAuth);
                 HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
