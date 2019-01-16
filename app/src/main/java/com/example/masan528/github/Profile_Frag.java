@@ -169,7 +169,6 @@ public class Profile_Frag extends Fragment {
     }
 
     private ArrayList<String> parse_result(String s) {
-        //{"login":"beichen-zhang","id":28381878,"node_id":"MDQ6VXNlcjI4MzgxODc4","avatar_url":"https://avatars1.githubusercontent.com/u/28381878?v=4","gravatar_id":"","url":"https://api.github.com/users/beichen-zhang","html_url":"https://github.com/beichen-zhang","followers_url":"https://api.github.com/users/beichen-zhang/followers","following_url":"https://api.github.com/users/beichen-zhang/following{/other_user}","gists_url":"https://api.github.com/users/beichen-zhang/gists{/gist_id}","starred_url":"https://api.github.com/users/beichen-zhang/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/beichen-zhang/subscriptions","organizations_url":"https://api.github.com/users/beichen-zhang/orgs","repos_url":"https://api.github.com/users/beichen-zhang/repos","events_url":"https://api.github.com/users/beichen-zhang/events{/privacy}","received_events_url":"https://api.github.com/users/beichen-zhang/received_events","type":"User","site_admin":false,"name":"Beichen Zhang","company":null,"blog":"https://www.linkedin.com/in/beichen-zhang/","location":"Urbana Champaign","email":"bzhang64@illinois.edu","hireable":null,"bio":"Senior student in U of I.","public_repos":5,"public_gists":0,"followers":0,"following":0,"created_at":"2017-05-04T04:51:25Z","updated_at":"2018-10-20T22:12:11Z"
         String input = s.replace('"','|');
         List<String> list = new ArrayList<String>(Arrays.asList(input.split(",")));
         ArrayList<String> result = new ArrayList<String>();
@@ -204,7 +203,8 @@ public class Profile_Frag extends Fragment {
 
     private class MyTask extends AsyncTask <Void,Void,Void>{
         String textResult;
-        String url;
+        String 
+            ;
 
         public MyTask (String url){
             this.url = url;
